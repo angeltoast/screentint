@@ -26,21 +26,32 @@
 #                  51 Franklin Street, Fifth Floor
 #                    Boston, MA 02110-1301 USA
 
-source listgen.sh # For generating menus and lists
+source lister.sh # For generating menus and lists
 
-Backtitle="Set Screen Colour Temperature"
+# GlobalInt=0
+# GlobalChar=""
+
+Backtitle="Screentint ~ Set Screen Colour Temperature"
 
 function Main {  # All steps are called from here
-  while :
-  do
-    listgen1 "1500 2500 3500 4500 5500 6500 7500 8500" "Tint range 1500 (warm - red) to 8500 (cool - blue)" "Set Finish"
-    if [ $Result = "Finish" ]; then
-      clear
-      exit
-    else
-      sct "$Result"
-    fi
-  done
+    while :
+    do
+        if [ !"$(which sct)" ]; then
+            DoNotFound "The program sct is needed but is not installed." "Check your distro documentation to see if it can be installed"
+            exit
+        fi
+        
+        DoMenu "1500 2500 3500 4500 5500 6500 7500 8500" "Set Finish" "Tint range 1500 (warm - red) to 8500 (cool - blue)"
+    
+        DoHeading
+        if [ $GlobalInt -eq 0 ]; then
+          DoMessage "Screen tint not set"
+        else
+          sct "$GlobalChar"  # Uses sct to set screen tint (Screen Colour Temperature)
+          DoMessage "Screen tint set to $GlobalChar"
+        fi
+        exit
+    done
 }
 
 Main
